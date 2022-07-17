@@ -8,7 +8,7 @@ Use yarn to install dependencies
 
 solidity version: 0.8.14
 
-Bridgeable ERC20 Labz Token tokens/labz.sol
+Bridgeable ERC20 Labz Token [tokens/labz.sol](akxlab/hh/blob/dev/contracts/tokens/Labz.sol)
 
 
 
