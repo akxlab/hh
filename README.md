@@ -7,11 +7,11 @@ layout: editorial
 
 # LEADING THE WAY TO MAINSTREAM DECENTRALIZATION
 
-
-
-{% hint style="info" %}
-**Good to know:** providing a brief overview of your product and its core use cases is a great place to start with product docs. Your product might seem obvious to you – you made it! However, to others, even folks who are trying your product after reading your site or getting a sales demo, it can still be unclear. This is your chance to clarify your product and set the right expectations!
-{% endhint %}
+>
+>
+> > _<mark style="color:red;">**AKX Labs wants to be leading the way to a safer and better decentralized market by providing solutions to hard social problems within all spheres of the decentralized financial economy.**</mark>_
+>
+>
 
 Here are a couple of examples of succinct overviews from products with really great docs:
 
