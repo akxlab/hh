@@ -1,13 +1,17 @@
-# Sample Hardhat Project
+# AKX Labs Solidity Contracts
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+Use yarn to install dependencies
 
-Try running some of the following tasks:
+### version 1.0.0
 
-```shell
-npx hardhat help
-npx hardhat test
-GAS_REPORT=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.ts
-```
+## Architecture
+
+solidity version: 0.8.14
+
+Bridgeable ERC20 Labz Token tokens/labz.sol
+
+
+
+
+
+
