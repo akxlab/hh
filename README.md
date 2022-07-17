@@ -25,11 +25,12 @@ Badges base contract - [Badges.sol](https://github.com/akxlab/hh/blob/dev/contra
 VipBadges extends Badges base - [VipBadges.sol](https://github.com/akxlab/hh/blob/dev/contracts/tokens/VipBadge.sol)
 
 
+
 ### Consensus (in the work) - in the style of POS
 
 DNA Consensus [directory](https://github.com/akxlab/hh/tree/dev/contracts/dna)
 
 DNA consensus interface [IDna.sol](https://github.com/akxlab/hh/blob/dev/contracts/dna/IDna.sol)
 
-DNA consensus rounds & controller [DnaConsensus.sol](https://github.com/akxlab/hh/blob/dev/contracts/dna/DnaConsensus.sol)
+DNA consensus rounds & oracle [DnaConsensus.sol](https://github.com/akxlab/hh/blob/dev/contracts/dna/DnaConsensus.sol)
 
