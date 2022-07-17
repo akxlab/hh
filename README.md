@@ -4,9 +4,15 @@ Use yarn to install dependencies
 
 ### version 1.0.0
 
-## Architecture
-
 solidity version: 0.8.14
+
+Hardhat with typescript
+
+
+
+## File Structure
+
+
 
 [tokens directory](https://github.com/akxlab/hh/tree/dev/contracts/tokens)
 
