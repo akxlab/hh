@@ -1,0 +1,4 @@
+{
+    "solidity.defaultCompiler": "localNodeModule",
+    "solidity.compileUsingLocalVersion": "/Volumes/Projects/FINAL-AKX-V1/soljson-v0.8.15+commit.e14f2714.js"
+}
