@@ -20,9 +20,9 @@ Bridgeable ERC20 Labz Token - [Labz.sol](https://github.com/akxlab/hh/blob/dev/c
 
 Share keeper Vault ERC4626 - [CollateralizedVault.sol](https://github.com/akxlab/hh/blob/dev/contracts/tokens/CollateralizedVault.sol)
 
+Badges base contract - [Badges.sol](https://github.com/akxlab/hh/blob/dev/contracts/tokens/Badges.sol)
 
-
-
+VipBadges extends Badges base - [VipBadges.sol](https://github.com/akxlab/hh/blob/dev/contracts/tokens/VipBadge.sol)
 
 
 
