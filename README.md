@@ -1,3 +1,5 @@
+![logo](https://www.akxipfs.com/ipfs/QmUcRjJTrwXyJxYvPKQc2iNdjwdiiXrTGugudUBhw69FQx)
+
 # AKX Labs Solidity Contracts
 
 Use yarn to install dependencies
@@ -33,4 +35,7 @@ DNA Consensus [directory](https://github.com/akxlab/hh/tree/dev/contracts/dna)
 DNA consensus interface [IDna.sol](https://github.com/akxlab/hh/blob/dev/contracts/dna/IDna.sol)
 
 DNA consensus rounds & oracle [DnaConsensus.sol](https://github.com/akxlab/hh/blob/dev/contracts/dna/DnaConsensus.sol)
+
+
+###
 
