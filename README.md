@@ -13,7 +13,7 @@ layout: editorial
 >
 >
 >
-> ## AKX ECOSYSTEM : IN THE PIPELINE
+> ## AKX ECOSYSTEM : IN THE PIPELINE <a href="#akx-projects-pipeline" id="akx-projects-pipeline"></a>
 >
 > #### **APELAND DAO**
 >
@@ -25,7 +25,7 @@ layout: editorial
 >
 > ****
 >
-> LABZ MARKET MAKER
+> **LABZ MARKET MAKER**
 >
 > A fund / market maker; similar to “Compound” and “Maker” with the goal to help developers make their ideas real while sharing profits made with their backers in an easy way.
 >
@@ -35,8 +35,6 @@ layout: editorial
 > Multichain bridges (EVM to and from Non EVM based chains).
 
 
-
-### Guides: Jump right in
 
 Follow our handy guides to get started on the basics as quickly as possible:
 
@@ -55,8 +53,6 @@ Follow our handy guides to get started on the basics as quickly as possible:
 {% hint style="info" %}
 **Good to know:** your product docs aren't just a reference of all your features! use them to encourage folks to perform certain actions and discover the value in your product.
 {% endhint %}
-
-### Fundamentals: Dive a little deeper
 
 Learn the fundamentals of MyProduct to get a deeper understanding of our main features:
 
