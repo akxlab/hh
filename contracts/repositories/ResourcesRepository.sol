@@ -6,7 +6,7 @@ import "./entities/Resource.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-contract ResourceRepository is ReentrancyGuard, Resource {
+contract ResourcesRepository is ReentrancyGuard, Resource {
     address public resourceRepositoryOwner;
 
     mapping(string => bool) private _rExists;
@@ -112,6 +112,19 @@ contract ResourceRepository is ReentrancyGuard, Resource {
         override
         onlyOwner
     {}
+
+    function getResourceID(address addr) public nonReentrant returns (bytes32) {
+        return addressToID[addr];
+    }
+
+    function getResource(bytes32 id) public nonReentrant returns(ResourceRecord memory) {
+        return _resourceRecords[id];
+    }
+
+    function isValidResource(address addr) public nonReentrant returns(bool) {
+        bytes32 id = getResourceID(addr);
+        return ValidAKXResourceAddress[addr][id];
+    }
 
     modifier onlyOwner() {
         require(msg.sender == resourceRepositoryOwner, "access denied");

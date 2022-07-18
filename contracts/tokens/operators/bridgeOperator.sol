@@ -67,7 +67,8 @@ contract BridgeOperator is IBridgeOperator, BaseSafeERC20, Bridgeable {
         bytes calldata data
      ) external override onlyBridge {
 
-        DepositData dd = abi.decode(data, (DepositData));
+        DepositData memory dd = abi.decode(data, (DepositData));
+
 
      }
 
