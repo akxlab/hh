@@ -52,7 +52,11 @@ address public admin = address(0x0);
     bytes32 public constant RBAC_ADMIN = keccak256("RBAC_ADMIN");
     bytes32 public constant RBAC_ALL_PERMISSIONS = keccak256(abi.encode(RBAC_RES_ID_MAGIC, PREFIX, ACCESS_CAN, ALLOW_ALL_VERIFIER_2BYTE, bytes1(0)));
 
-    
+    mapping(string => mapping(bytes32 => bytes32)) private _permissionsByStringWithResourceID;
+    mapping(string => bytes32) public _permissions;
+    mapping(string => bool) private _permissionExists;
+
+
     function initialize() public override ifNotInitialized  onlyRole(BaseRoles.GLOBAL_ADMIN_ROLE) {
         _setupRole(RBAC_ADMIN, msg.sender);
         _setupPermission(RBAC_ALL_PERMISSIONS, RBAC_RES_ID_MAGIC, msg.sender);
@@ -68,6 +72,18 @@ address public admin = address(0x0);
     function _setupPermission(bytes32 permissionBytes, bytes32 resourceID, address subject) public  onlyRole(BaseRoles.GLOBAL_ADMIN_ROLE) {
         require(admin == address(0x0), "akx-rbac/admin-already-setup");
         grant(resourceID, permissionBytes, subject);
+    }
+
+    function _addPermission(string memory pString, bytes32 permissionBytes, bytes32 resourceID) internal {
+            _permissionsByStringWithResourceID[pString][permissionBytes] = resourceID;
+            _permissions[pString] = permissionBytes;
+    }
+
+    function addPermission(string memory pString, bytes32 resourceID) public onlyRole(RBAC_ADMIN) {
+        require(_permissionExists[pString] != true, "akx-rbac/cannot-add-permission");
+        bytes32 pBytes = keccak256(abi.encodePacked(pString));
+        _addPermission(pString, pBytes, resourceID);
+        _permissionExists[pString] == true;
     }
 
 
