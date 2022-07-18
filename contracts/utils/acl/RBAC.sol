@@ -55,7 +55,7 @@ address public admin = address(0x0);
     
     function initialize() public override ifNotInitialized  onlyRole(BaseRoles.GLOBAL_ADMIN_ROLE) {
         _setupRole(RBAC_ADMIN, msg.sender);
-        _setupPermission(RBAC_ALL_PERMISSIONS, 0, msg.sender);
+        _setupPermission(RBAC_ALL_PERMISSIONS, RBAC_RES_ID_MAGIC, msg.sender);
     }
 
     function __RBAC_init() public ifNotInitialized onlyRole(BaseRoles.GLOBAL_ADMIN_ROLE) {
@@ -65,9 +65,9 @@ address public admin = address(0x0);
         _resourcesCreators[RBAC_RES_ID_MAGIC][msg.sender] = true;
     }
 
-    function _setupPermission(bytes32 permissionBytes, uint ressourceID, address subject) public onlyRole(BaseRoles.GLOBAL_ADMIN_ROLE) {
+    function _setupPermission(bytes32 permissionBytes, bytes32 resourceID, address subject) public  onlyRole(BaseRoles.GLOBAL_ADMIN_ROLE) {
         require(admin == address(0x0), "akx-rbac/admin-already-setup");
-
+        grant(resourceID, permissionBytes, subject);
     }
 
 
@@ -77,13 +77,14 @@ address public admin = address(0x0);
         @param permissionBytes keccak256 of the permission name + Prefix (CAN_ or CANT_) + ACTION (ie.: CAN_WRITE_) + TOPIC (ie.: CAN_WITHDRAW_ETHER or CAN_DEPOSIT_TOKEN)
         @param subject the Address you want to grant the permission to
      */
-    function grant(bytes32 resourceID, bytes32 permissionBytes, address subject) external onlyRole(RBAC_ADMIN) {
+    function grant(bytes32 resourceID, bytes32 permissionBytes, address subject) public onlyRole(RBAC_ADMIN) {
         require(hasPermission[resourceID][subject][permissionBytes] != true, "akx-rbac/already-has-permission");
         hasPermission[resourceID][subject][permissionBytes] = true;
     }
 
-    function revoke(bytes32 resourceID, bytes32 permissionBytes, address subject) external onlyRole(RBAC_ADMIN) {
-
+    function revoke(bytes32 resourceID, bytes32 permissionBytes, address subject) public onlyRole(RBAC_ADMIN) {
+    require(hasPermission[resourceID][subject][permissionBytes] == true, "akx-rbac/revoke-invalid-permissionid");
+    delete hasPermission[resourceID][subject][permissionBytes];
     }
 
     /**
