@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 contract ResourceRepository is ReentrancyGuard, Resource {
-
     address public resourceRepositoryOwner;
 
     mapping(string => bool) private _rExists;
@@ -16,25 +15,25 @@ contract ResourceRepository is ReentrancyGuard, Resource {
     mapping(string => bytes32) private _resourceIDs;
     mapping(bytes32 => address) private _resourceAddresses;
     mapping(bytes32 => Resource.ResourceTypes) private _resourceTypes;
-    mapping(bytes32 => mapping(Resource.ResourceTypes => bool)) private _isResourceType;
+    mapping(bytes32 => mapping(Resource.ResourceTypes => bool))
+        private _isResourceType;
     mapping(bytes32 => Resource.ResourceRecord) private _resourceRecords;
     mapping(address => mapping(bytes32 => bool)) public ValidAKXResourceAddress;
     mapping(address => bytes32) private addressToID;
-    
+
     using Counters for Counters.Counter;
     Counters.Counter internal _index;
 
-    Resource internal _res;
-
-
-
     constructor() {
-        _res.initialize();
         resourceRepositoryOwner = msg.sender;
-
     }
 
-    function _addResource(string memory name, Resource.ResourceTypes rType, address resAddr, address owner_) internal returns(bytes32) {
+    function _addResource(
+        string memory name,
+        Resource.ResourceTypes rType,
+        address resAddr,
+        address owner_
+    ) internal returns (bytes32) {
         bytes32 id = _calculateResourceID(name, rType);
         _rExists[name] = true;
         _ids[id] = true;
@@ -53,23 +52,29 @@ contract ResourceRepository is ReentrancyGuard, Resource {
         return id;
     }
 
-    function _calculateResourceID(string memory name, Resource.ResourceTypes  rType) internal  returns(bytes32) {
+    function _calculateResourceID(
+        string memory name,
+        Resource.ResourceTypes rType
+    ) internal returns (bytes32) {
         uint256 nonce = _index.current();
         bytes memory toKeccak = abi.encode(name, rType, nonce);
         _index.increment();
         return keccak256(toKeccak);
     }
 
-    function addResource(string memory name,Resource.ResourceTypes rType, address resAddr, address owner_) public onlyOwner returns (bytes32) {
-
-       require(_rExists[name] != true, "resource already exists");
-       return _addResource(name, rType, resAddr, owner_);
-
+    function addResource(
+        string memory name,
+        Resource.ResourceTypes rType,
+        address resAddr,
+        address owner_
+    ) public onlyOwner returns (bytes32) {
+        require(_rExists[name] != true, "resource already exists");
+        return _addResource(name, rType, resAddr, owner_);
     }
 
     function removeResource(bytes32 id) public onlyOwner {
         require(_ids[id] == true, "resource does not exists");
-         
+
         string memory name = _idToString[id];
         delete _resourceIDs[name];
         address resAddr = _resourceAddresses[id];
@@ -85,23 +90,31 @@ contract ResourceRepository is ReentrancyGuard, Resource {
         delete _ids[id];
     }
 
-    function isValidAKXEcosystemResource(address resAddr) external nonReentrant returns(bool) {
-            bytes32 id = addressToID[resAddr];
-            return ValidAKXResourceAddress[resAddr][id] == true;
+    function isValidAKXEcosystemResource(address resAddr)
+        external
+        nonReentrant
+        returns (bool)
+    {
+        bytes32 id = addressToID[resAddr];
+        return ValidAKXResourceAddress[resAddr][id] == true;
     }
 
-    function initResource(string memory name, string memory rType, address _rAddress) public onlyOwner override {
+    function initResource(
+        string memory name,
+        string memory rType,
+        address _rAddress
+    ) public override onlyOwner {
         addResource(name, strToType[rType], _rAddress, msg.sender);
     }
 
-    function initResourceRecord(address owner, bytes memory merkleProof) public onlyOwner override {
-
-    }
-
+    function initResourceRecord(address owner, bytes memory merkleProof)
+        public
+        override
+        onlyOwner
+    {}
 
     modifier onlyOwner() {
         require(msg.sender == resourceRepositoryOwner, "access denied");
         _;
     }
-
 }
