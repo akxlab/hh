@@ -103,9 +103,6 @@ abstract contract AKXBadges is IAKXBadgesMetadata, ERC721URIStorage {
     uint8[] levels = [1,2,3,4,5,6,7,8,9,10];
 
 
-    constructor() {
-
-    }
 
     function isSellable() external virtual returns(bool);
     function isBuyable() external virtual returns(bool);
