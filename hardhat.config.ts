@@ -18,9 +18,6 @@ const config: HardhatUserConfig = {
     deployer: 0,
     multisig: 1,
   },
-  paths: {
-    sources: "src",
-  },
   gasReporter: {
     currency: "USD",
     gasPrice: 100,

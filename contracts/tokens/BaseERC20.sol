@@ -12,7 +12,7 @@ import "../utils/acl/RBAC.sol";
 
 
 
-abstract contract BaseSafeERC20 is Lock, ERC20Burnable, RBAC {
+abstract contract BaseSafeERC20 is Lock, RBAC {
 
     using Math for uint256;
 
@@ -22,7 +22,7 @@ abstract contract BaseSafeERC20 is Lock, ERC20Burnable, RBAC {
 
     bytes32 public constant RBAC_BASE_SAFEERC20 =  keccak256("BaseSafeERC20(uint256 unlockTime)");
 
-    constructor(uint256 _unlockTime) {
+    constructor(uint256 _unlockTime) Lock(_unlockTime)  RBAC() {
         addPermission("ERC20_OPERATOR", RBAC_BASE_SAFEERC20);
         grant(RBAC_BASE_SAFEERC20, _permissions["ERC20_OPERATOR"], msg.sender);
         unlockTime = _unlockTime;
