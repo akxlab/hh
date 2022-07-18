@@ -11,9 +11,10 @@ pragma solidity 0.8.15;
 import "./interfaces/draft-IRBAC.sol";
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 import "./BaseRoles.sol";
 
-abstract contract  RBAC is IRBAC, AccessControlEnumerable, ReentrancyGuard {
+abstract contract  RBAC is IRBAC, ERC165, AccessControlEnumerable, ReentrancyGuard {
 
     enum RWUDPermissions {
         NONE,
@@ -109,7 +110,7 @@ address public admin = address(0x0);
     /**
         @dev simple IERC165 implementation
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
+    function supportsInterface(bytes4 interfaceId) public view virtual override(AccessControlEnumerable, ERC165,IRBAC) returns (bool) {
         return (interfaceId ==  type(IERC165).interfaceId || interfaceId == type(IRBAC).interfaceId);
     }
     
