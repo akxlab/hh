@@ -4,8 +4,9 @@ pragma solidity 0.8.15;
 
 import "./entities/Resource.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-contract ResourceRepository {
+contract ResourceRepository is ReentrancyGuard, Resource {
 
     address public resourceRepositoryOwner;
 
@@ -17,6 +18,8 @@ contract ResourceRepository {
     mapping(bytes32 => Resource.ResourceTypes) private _resourceTypes;
     mapping(bytes32 => mapping(Resource.ResourceTypes => bool)) private _isResourceType;
     mapping(bytes32 => Resource.ResourceRecord) private _resourceRecords;
+    mapping(address => mapping(bytes32 => bool)) public ValidAKXResourceAddress;
+    mapping(address => bytes32) private addressToID;
     
     using Counters for Counters.Counter;
     Counters.Counter internal _index;
@@ -39,6 +42,7 @@ contract ResourceRepository {
         _resourceAddresses[id] = resAddr;
         _resourceTypes[id] = rType;
         _isResourceType[id][rType] = true;
+        ValidAKXResourceAddress[resAddr][id] = true;
         Resource.ResourceRecord memory rr = Resource.ResourceRecord({
             name: name,
             rType: rType,
@@ -68,6 +72,7 @@ contract ResourceRepository {
          
         string memory name = _idToString[id];
         delete _resourceIDs[name];
+        address resAddr = _resourceAddresses[id];
         delete _resourceAddresses[id];
         Resource.ResourceTypes rtype = _resourceTypes[id];
         delete _isResourceType[id][rtype];
@@ -75,8 +80,24 @@ contract ResourceRepository {
         delete _idToString[id];
         delete _rExists[name];
         delete _resourceRecords[id];
+        delete addressToID[resAddr];
+        delete ValidAKXResourceAddress[resAddr][id];
         delete _ids[id];
     }
+
+    function isValidAKXEcosystemResource(address resAddr) external nonReentrant returns(bool) {
+            bytes32 id = addressToID[resAddr];
+            return ValidAKXResourceAddress[resAddr][id] == true;
+    }
+
+    function initResource(string memory name, string memory rType, address _rAddress) public onlyOwner override {
+        addResource(name, strToType[rType], _rAddress, msg.sender);
+    }
+
+    function initResourceRecord(address owner, bytes memory merkleProof) public onlyOwner override {
+
+    }
+
 
     modifier onlyOwner() {
         require(msg.sender == resourceRepositoryOwner, "access denied");

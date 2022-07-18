@@ -49,7 +49,7 @@ abstract contract Resource {
         return strToType[name];
     }
 
-    function initResource(string memory name, bytes32 rType, address _rAddress) external virtual;
+    function initResource(string memory name, string memory rType, address _rAddress) external virtual;
 
     function initResourceRecord(address owner, bytes memory merkleProof) external virtual;
 
