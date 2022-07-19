@@ -58,9 +58,9 @@ contract PrivateSale is ReentrancyGuard, Ownable {
     uint256 public labzMinted;
 
     /**
-        @dev maxTotalAmountPerHoldersInLabz is the maximum a holder can have during presale
-        
-        @notice Sets the maximum a holder can have during presale  (1M Labz) or approximately 1% of 
+        @dev maxTotalAmountPerHoldersInLabz is the maximum a holder can hold during presale
+
+        @notice Sets the maximum a holder can hold during presale  (1M Labz) or approximately 1% of 
         circulating supply. 
         
         @notice That limit will be lifted after the private sale is over this is to guarantee a fair private sale 
