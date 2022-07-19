@@ -3,7 +3,7 @@ pragma solidity 0.8.15;
 // SPDX-License-Identifier: MIT
 
 /**
-    THIS CONTRACT WILL BE REMOVED ONCE THE PRIVATE SALE IS OVER
+    THIS CONTRACT WILL BE STOPPED ONCE THE PRIVATE SALE IS OVER
     PRIVATE SALE STARTS ON JULY 25TH 2022 AND WILL LAST 10 DAYS.
  */
 
@@ -20,21 +20,15 @@ contract PrivateSale is ReentrancyGuard, Ownable {
     uint64 public constant startOn = 1658721609;
     uint64 public constant endsOn = 1659672009;
 
-    using Counters for Counters.Counter;
-    Counters.Counter private holdersIndex;
-    Counters.Counter private nonceIndex;
-    Counters.Counter private txIndex;
-
     using SafeERC20 for IERC20;
     using Math for uint256;
 
-    address[] private _holders;
-    uint256[] private _nonces;
-    uint256[] private _amounts;
 
     address private _whitelist;
 
     address public labzTokenAddress;
+
+    address public badgesFactory;
 
     address public multisig;
 
@@ -49,6 +43,7 @@ contract PrivateSale is ReentrancyGuard, Ownable {
     uint256 public chainID;
 
     uint256 public maxCirculatingSupply = 75000000 * 1e18; // 75M LABZ available for private sale
+
     Labz private labzToken;
 
     bool public privateSaleStarted;
@@ -61,6 +56,12 @@ contract PrivateSale is ReentrancyGuard, Ownable {
     uint256 public countdown;
     uint256 public labzLeft;
     uint256 public labzMinted;
+
+    /**
+        @notice maxTotalAmountPerHoldersInLabz is the maximum a holder can have during presale  (1M Labz) or approximately 1% of circulating supply that limit will be lifted after the private sale is over
+                this is to guarantee a fair private sale and the stability of the token after the lock period is over.
+     */
+    uint256 public maxTotalAmountPerHoldersInLabz = 1000000 * 10 ** 18;
 
     constructor(
         address token,
