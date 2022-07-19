@@ -15,13 +15,28 @@ contract Labz is ERC20, ERC20Burnable, ERC20Permit, AccessControlEnumerable {
     uint256 public cap;
     uint256 public chainId;
 
-    constructor(address multisig) ERC20(NAME, SYMBOL) ERC20Permit(NAME) {
+    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    bytes32 public constant PRESALE_ROLE = keccak256("PRESALE_MINTER_ROLE");
 
+    bool public isPresale;
+
+    constructor(bool _isPresale, address presale) ERC20(NAME, SYMBOL) ERC20Permit(NAME) {
+        isPresale = _isPresale;
+        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        _setupRole(PRESALE_ROLE, presale);
     }
 
-    function setup(address multisig) internal {
-
+    function mint(address _to, uint256 qty) public onlyRole(MINTER_ROLE) {
+        super._mint(_to, qty);
     }
+
+    function mintForPresale(address _to, uint256 qty) public onlyRole(PRESALE_ROLE) {
+        super._mint(_to, qty);
+    }
+
+    
+
+ 
 
 
 
