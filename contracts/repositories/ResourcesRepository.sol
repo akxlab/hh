@@ -103,8 +103,9 @@ contract ResourcesRepository is Initializable, ReentrancyGuardUpgradeable, Resou
         string memory name,
         string memory rType,
         address _rAddress
-    ) public override onlyOwner {
-        addResource(name, strToType[rType], _rAddress, msg.sender);
+    ) public onlyOwner override returns(bytes32) {
+        
+        return addResource(name, strToType[rType], _rAddress, msg.sender);
     }
 
     function initResourceRecord(address owner, bytes memory merkleProof)

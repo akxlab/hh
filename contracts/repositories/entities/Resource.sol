@@ -12,6 +12,7 @@ abstract contract Resource {
         ResourceTypes rType;
         address rAddress;
         address owner;
+        bytes data;
       
     }
 
@@ -48,7 +49,7 @@ abstract contract Resource {
         return strToType[name];
     }
 
-    function initResource(string memory name, string memory rType, address _rAddress) external virtual;
+    function initResource(string memory name, string memory rType, address _rAddress) public virtual returns(bytes32);
 
     function initResourceRecord(address owner, bytes memory merkleProof) external virtual;
 
