@@ -58,15 +58,15 @@ address public admin = address(0x0);
 
 
     function initialize() public override ifNotInitialized  onlyRole(BaseRoles.GLOBAL_ADMIN_ROLE) {
-        _setupRole(RBAC_ADMIN, msg.sender);
-        _setupPermission(RBAC_ALL_PERMISSIONS, RBAC_RES_ID_MAGIC, msg.sender);
+      
     }
 
-    function __RBAC_init() public ifNotInitialized onlyRole(BaseRoles.GLOBAL_ADMIN_ROLE) {
-
+    function __RBAC_init(address globalAdmin) public ifNotInitialized onlyRole(BaseRoles.GLOBAL_ADMIN_ROLE) {
+  _setupRole(RBAC_ADMIN, globalAdmin);
+        _setupPermission(RBAC_ALL_PERMISSIONS, RBAC_RES_ID_MAGIC, globalAdmin);
         _resources[keccak256("RBAC")] = address(this);
         _resourcesInterfaces[keccak256("RBAC")] = type(IRBAC).interfaceId;
-        _resourcesCreators[RBAC_RES_ID_MAGIC][msg.sender] = true;
+        _resourcesCreators[RBAC_RES_ID_MAGIC][globalAdmin] = true;
     }
 
     function _setupPermission(bytes32 permissionBytes, bytes32 resourceID, address subject) public  onlyRole(BaseRoles.GLOBAL_ADMIN_ROLE) {

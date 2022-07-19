@@ -132,15 +132,6 @@ contract AKXEcosystemRouter is Initializable, UUPSUpgradeable, AKXRoutes {
 
     function _authorizeUpgrade(address newImplementation) internal onlyOwner override {}
 
-    modifier onlyContract() {
-        require(isContract(msg.sender) == true, "only contracts can call");
-        _;
-    }
-
-    function isContract(address addr) public nonReentrant returns (bool) {
-    uint size;
-    assembly { size := extcodesize(addr) }
-    return size > 0;
-    }
+ 
 
 }

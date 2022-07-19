@@ -19,10 +19,10 @@ abstract contract Resource {
         CONTRACT,
         BRIDGE,
         REPOSITORY,
-        PROXY,
-        OPERATOR,
         GOVERNOR,
-        DAPP
+        DAPP,
+        NFT,
+        USER
     }
 
     mapping(string => ResourceTypes) public strToType;
@@ -38,8 +38,7 @@ abstract contract Resource {
         strToType["contract"] = ResourceTypes.CONTRACT;
         strToType["bridge"] = ResourceTypes.BRIDGE;
         strToType["repository"] = ResourceTypes.REPOSITORY;
-        strToType["proxy"] = ResourceTypes.PROXY;
-        strToType["operator"] = ResourceTypes.OPERATOR; 
+
         strToType["governor"] = ResourceTypes.GOVERNOR;
         strToType["dapp"] = ResourceTypes.DAPP;  
         setup = true;

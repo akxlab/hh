@@ -3,10 +3,10 @@ pragma solidity 0.8.15;
 // SPDX-License-Identifier: MIT
 
 import "./entities/Resource.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 
-contract ResourcesRepository is ReentrancyGuard, Resource {
+contract ResourcesRepository is Initializable, ReentrancyGuardUpgradeable, Resource {
     address public resourceRepositoryOwner;
 
     mapping(string => bool) private _rExists;
@@ -21,8 +21,8 @@ contract ResourcesRepository is ReentrancyGuard, Resource {
     mapping(address => mapping(bytes32 => bool)) public ValidAKXResourceAddress;
     mapping(address => bytes32) private addressToID;
 
-    using Counters for Counters.Counter;
-    Counters.Counter internal _index;
+    using CountersUpgradeable for CountersUpgradeable.Counter;
+    CountersUpgradeable.Counter internal _index;
 
     constructor() {
         resourceRepositoryOwner = msg.sender;
@@ -120,6 +120,51 @@ contract ResourcesRepository is ReentrancyGuard, Resource {
     function getResource(bytes32 id) public nonReentrant returns(ResourceRecord memory) {
         return _resourceRecords[id];
     }
+
+    function getResourceType(bytes32 id) public nonReentrant returns(Resource.ResourceTypes) {
+    return _resourceTypes[id];
+    }
+
+    function isBridge(bytes32 id) public nonReentrant returns(bool) {
+        return getResourceType(id) == Resource.ResourceTypes.BRIDGE;
+    }
+
+    function isRepository(bytes32 id) public nonReentrant returns(bool) {
+        return getResourceType(id) == Resource.ResourceTypes.REPOSITORY;
+    }
+
+    function isContract(bytes32 id) public nonReentrant returns(bool) {
+        return getResourceType(id) == Resource.ResourceTypes.CONTRACT;
+    }
+
+    function isGovernor(bytes32 id) public nonReentrant returns(bool) {
+        return getResourceType(id) == Resource.ResourceTypes.GOVERNOR;
+    }
+
+    function isDapp(bytes32 id) public nonReentrant returns(bool) {
+        return getResourceType(id) == Resource.ResourceTypes.DAPP;
+    }
+
+    function isNft(bytes32 id) public nonReentrant returns(bool) {
+        return getResourceType(id) == Resource.ResourceTypes.NFT;
+    }
+
+     function isUser(bytes32 id) public nonReentrant returns(bool) {
+        return getResourceType(id) == Resource.ResourceTypes.USER;
+    }
+
+    function getResourceTypeAsString(bytes32 id) public nonReentrant returns (string memory) {
+        if(isBridge(id) == true) return "bridge";
+        if(isRepository(id) == true) return "repository";
+        if(isContract(id) == true) return "contract";
+        if(isGovernor(id) == true) return "governor";
+        if(isDapp(id) == true) return "dapp";
+        if(isNft(id) == true) return "nft";
+        if(isUser(id) == true) return "user";
+        revert("invalid resource type or not supported");
+    }
+
+
 
     function isValidResource(address addr) public nonReentrant returns(bool) {
         bytes32 id = getResourceID(addr);
