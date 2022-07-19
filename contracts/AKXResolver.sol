@@ -132,7 +132,7 @@ contract AKXResolver is Initializable, AKXResolverBase, ReentrancyGuardUpgradeab
         resolve functions supporting many input types
      */
 
-    function resolve(address addr) public onlyAuthorized(msg.sender) returns(bytes memory) {
+    function resolve(address addr) public nonReentrant returns(bytes memory) {
         bytes32 id = addrToResID[addr];
         assert(validateSignature(id) == true);
         string memory ct = resolveContentType(id);
@@ -141,7 +141,7 @@ contract AKXResolver is Initializable, AKXResolverBase, ReentrancyGuardUpgradeab
         return abi.encode(_rr);     
     }
 
-    function resolve(string memory str) public onlyAuthorized(msg.sender) returns (bytes memory) {
+    function resolve(string memory str) public nonReentrant returns (bytes memory) {
          bytes32 id = stringsToResID[str];
         assert(validateSignature(id) == true);
         string memory ct = resolveContentType(id);
@@ -155,7 +155,7 @@ contract AKXResolver is Initializable, AKXResolverBase, ReentrancyGuardUpgradeab
     function resolve(bytes calldata data) public onlyAuthorized(msg.sender) {}
     */
 
-    function resolve(bytes32 id) public onlyAuthorized(msg.sender) returns(bytes memory) {
+    function resolve(bytes32 id) public nonReentrant returns(bytes memory) {
          assert(validateSignature(id) == true);
         string memory ct = resolveContentType(id);
         
