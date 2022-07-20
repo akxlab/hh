@@ -9,11 +9,51 @@ import "./AKXEcosystemRouter.sol";
 import "./utils/ERC1271.sol";
 import "./utils/LibSignature.sol";
 import "./AKXResolver.sol";
+import "@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol";
+import "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/beacon/IBeaconUpgradeable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+
+// @dev no worry about the beacon name ;) we just loooove canadian bacon !!!! 
+
+contract AKXBaconMmmBaaaacon is BeaconProxy, Ownable {
+
+   
+    constructor(address beacon, bytes memory data) BeaconProxy(beacon, data) {
 
 
 
+    }
 
-contract AKXGuardian is Initializable, UUPSUpgradeable, RBAC {
+     /**
+     * @dev Returns the current beacon address.
+     */
+    function _beacon() internal view virtual override returns (address) {
+        return _getBeacon();
+    }
+
+ 
+}
+
+contract AKXBeaconsRepository {
+
+    mapping(address => UpgradeableBeacon) public _uBeacons;
+    mapping(uint => address) public beaconsss;
+
+    constructor(address[3] memory beacons) {
+
+        for(uint256 j = 0; j < beacons.length; j++) {
+            _uBeacons[beacons[j]] = new UpgradeableBeacon(beacons[j]);
+            beaconsss[j] = beacons[j];
+        }
+
+    }
+
+}
+
+
+contract AKXGuardian is Initializable, UpgradeableBeacon, RBAC {
 
     using LibSignature for bytes32;
 
@@ -26,19 +66,24 @@ contract AKXGuardian is Initializable, UUPSUpgradeable, RBAC {
     address public resolverImplementation;
     AKXResolver private _resolver;
 
-    function initialize(
-        address _routerImplemnentation,
+ /*   function initialize(
+        address _routerImplementation,
         address _repoImplementation,
          address _resolverImplementation
     ) public initializer {
         __RBAC_init(msg.sender);
-        __AKXGuardian_init(_routerImplemnentation, _repoImplementation, _resolverImplementation);
-    }
+        __AKXGuardian_init(_routerImplementation, _repoImplementation, _resolverImplementation);
+    } */
+
+    constructor(address beaconsRepo) UpgradeableBeacon(beaconsRepo) {
+            AKXBeaconsRepository br = AKXBeaconsRepository(beaconsRepo);
+            __AKXGuardian_init(br.beaconsss(0), br.beaconsss(1),  br.beaconsss(2));
+         }
 
     function __AKXGuardian_init(    
         address _routerImplemnentation,
         address _repoImplementation,
-        address _resolverImplementation) public onlyInitializing nonReentrant {
+        address _resolverImplementation) internal {
             repositoryImplemnentation = _repoImplementation;
             resolverImplementation = _resolverImplementation;
             routerImplementation = _routerImplemnentation;
@@ -47,7 +92,6 @@ contract AKXGuardian is Initializable, UUPSUpgradeable, RBAC {
             _resolver = AKXResolver(resolverImplementation);
         }
 
-    function _authorizeUpgrade(address newImplementation) internal onlyRole(BaseRoles.GLOBAL_ADMIN_ROLE)  override {}
 
     function supportsInterface(bytes4 interfaceID) public view override returns(bool) {
         return super.supportsInterface(interfaceID);

@@ -109,7 +109,7 @@ contract AKXResolver is Initializable, AKXResolverBase, ReentrancyGuardUpgradeab
        address signer = hash.recover(sig);
        assert(signer == scr.owner);
        bytes32 rid = rr.initResource(
-       scr.name, scr.types, scr.addr
+       scr.name, scr.types, scr.addr, data
         );
     
         setContentHash(rid, hash);
