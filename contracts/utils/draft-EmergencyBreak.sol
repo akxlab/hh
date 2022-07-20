@@ -49,10 +49,7 @@ import "./draft-IEmergencyBreak.sol";
 
 abstract contract EmergencyBreak is IEmergencyBreak  {
 
-    bytes4 public constant INTERFACE_ID = bytes4(keccak256(abi.encodePacked("emergencyBreak(string memory)")));
    
-   /* event EmergencyBreakActivated(address indexed from, string reason, uint256 when);
-    event EmergencyBreakDeactivated(address indexed from, string reason, bool problemFixed, uint256 when);*/
 
     bool public emergencyBreakActivated;
     string public emergencyBreakActivationReason;
@@ -77,8 +74,8 @@ abstract contract EmergencyBreak is IEmergencyBreak  {
 
      */
 
-    function emergencyBreak(string memory reason) external  payable virtual {}
-    function deactivateBreak() external virtual {}
+    function emergencyBreak(string memory reason) external virtual override {}
+    function deactivateBreak() external virtual override {}
 
     modifier emergencyNotEnabled() {
         require(emergencyBreakActivated != true, "cannot do that while in emergency mode");

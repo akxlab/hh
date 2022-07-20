@@ -1,0 +1,8 @@
+[
+  "constructor(address)",
+  "function defaultRegistrationType() view returns (uint8)",
+  "function manuallyRegisterNewUser(uint256,address,bool,string) returns (tuple(uint256,uint256,bytes))",
+  "function registerAsRefferer(string,address)",
+  "function requestReceiver(bytes) returns (tuple(uint256,uint256,bytes))",
+  "function userNftContract() view returns (address)"
+]

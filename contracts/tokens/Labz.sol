@@ -20,10 +20,13 @@ contract Labz is ERC20, ERC20Burnable, ERC20Permit, AccessControlEnumerable {
 
     bool public isPresale;
 
-    constructor(bool _isPresale, address presale) ERC20(NAME, SYMBOL) ERC20Permit(NAME) {
-        isPresale = _isPresale;
+    constructor() ERC20(NAME, SYMBOL) ERC20Permit(NAME) {
+        isPresale = true;
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        _setupRole(PRESALE_ROLE, presale);
+    }
+
+    function grantPresaleRole(address presale) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        grantRole(PRESALE_ROLE, presale);
     }
 
     function mint(address _to, uint256 qty) public onlyRole(MINTER_ROLE) {

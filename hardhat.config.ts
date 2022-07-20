@@ -55,6 +55,11 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    goerli: {
+      url: process.env.ETHEREUM_TEST_URL || "",
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
     bsc_testnet: {
       url: "https://data-seed-prebsc-1-s1.binance.org:8545",
       chainId: 97,
@@ -95,9 +100,8 @@ const config: HardhatUserConfig = {
     noColors: true,
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
+    apiKey: process.env.GOERLI_API_KEY
   },
-
   // @ts-ignore
 
   abiExporter: {
