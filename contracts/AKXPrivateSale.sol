@@ -38,25 +38,21 @@ pragma solidity 0.8.15;
     PRIVATE SALE STARTS ON JULY 25TH 2022 AND WILL LAST 10 DAYS.
    */  
  
-
-import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/utils/Math/math.sol";
-
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "./tokens/Labz.sol";
+import "@openzeppelin/contracts/utils/math/Math.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "./utils/draft-EmergencyBreak.sol";
+import "./AKXPsACL.sol";
 
-contract PrivateSale is ReentrancyGuard, Ownable {
+
+contract PrivateSale is ReentrancyGuard, AccessControlEnumerable, AKXPsACL, EmergencyBreak {
     uint64 public constant startOn = 1658721609;
     uint64 public constant endsOn = 1659672009;
 
-    using SafeERC20 for IERC20;
     using Math for uint256;
 
 
-    address private _whitelist;
+    address private _authenticator;
 
     address public labzTokenAddress;
 
@@ -89,6 +85,10 @@ contract PrivateSale is ReentrancyGuard, Ownable {
     uint256 public labzLeft;
     uint256 public labzMinted;
 
+  
+
+
+
     /**
         @dev maxTotalAmountPerHoldersInLabz is the maximum a holder can hold for the duration of
         the private sale.
@@ -104,24 +104,32 @@ contract PrivateSale is ReentrancyGuard, Ownable {
     constructor(
         address token,
         address _multisig,
-        address whitelist,
+        address authenticator,
         uint256 startPrice
     ) {
         labzTokenAddress = token;
         multisig = _multisig;
-        _whitelist = whitelist;
+        _authenticator = authenticator;
         labzToken = Labz(token);
         countdown = startOn - block.timestamp;
         privateSaleStarted = false;
         privateSaleEnded = false;
         price = startPrice;
         chainID = block.chainid;
+        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        _setupRole(GLOBAL_ADMIN, msg.sender);
+        _setupRole(UPDATER_ROLE, msg.sender);
+        _setupRole(EMERGENCY_BREAK_ROLE, msg.sender);
+        _setupRole(MULTISIG_ROLE, multisig);
+             
     }
+
+
 
     /**
         @notice everyone can start the private sale if its time for it to start will revert if conditions are not met
      */
-    function startPrivateSale() public nonReentrant returns (bool) {
+    function startPrivateSale() public nonReentrant emergencyNotEnabled returns (bool) {
         require(
             privateSaleEnded != true && privateSaleStarted != true,
             "sale cannot be started"
@@ -138,11 +146,26 @@ contract PrivateSale is ReentrancyGuard, Ownable {
         return true;
     }
 
+    
+    function emergencyBreak(string memory reason) external payable override onlyRole(EMERGENCY_BREAK_ROLE) {
+        require(emergencyBreakActivated != true, "already in emergency mode");
+        emergencyBreakActivated = true;
+        emergencyBreakActivationReason = reason;
+        emit EmergencyBreakActivated(msg.sender, reason, block.timestamp);
+    }
+
+    function deactivateBreak() external override onlyRole(EMERGENCY_BREAK_ROLE) {
+          require(emergencyBreakActivated == true, "not in emergency mode");
+        emergencyBreakActivated = false;
+        emit EmergencyBreakDeactivated(msg.sender, emergencyBreakActivationReason, true,  block.timestamp);
+    }
+
+
     function updateCountdown() private {
         countdown = startOn - block.timestamp;
     }
 
-    function buyQty(uint256 qty) external payable nonReentrant presaleStarted {
+    function buyQty(uint256 qty) external payable nonReentrant presaleStarted emergencyNotEnabled {
         require(msg.value > 0, "no zero amount");
         require(msg.sender != address(0), "no zero address");
         uint256 amount = getQuoteWithQty(qty);
@@ -158,7 +181,7 @@ contract PrivateSale is ReentrancyGuard, Ownable {
         require(sent, "failed to transfer ether / matics");
     }
 
-    function buyWithEthers() external payable nonReentrant {
+    function buyWithEthers() external payable nonReentrant emergencyNotEnabled {
         require(msg.value > 0, "no zero amount");
         require(msg.sender != address(0), "no zero address");
         uint256 qty = getQuoteWithValueInETH(msg.value);
@@ -172,13 +195,13 @@ contract PrivateSale is ReentrancyGuard, Ownable {
         require(sent, "failed to transfer ether / matics");
     }
 
-    function getQuoteWithQty(uint256 qty) public view returns (uint256) {
+    function getQuoteWithQty(uint256 qty) public view emergencyNotEnabled returns (uint256) {
         return _calculateAmount(qty);
     }
 
     function getQuoteWithValueInETH(uint256 ethValue)
         public
-        view
+        view emergencyNotEnabled
         returns (uint256)
     {
         return _calculateAmount(ethValue);
@@ -221,7 +244,7 @@ contract PrivateSale is ReentrancyGuard, Ownable {
         labzLeft = maxCirculatingSupply - labzMinted;
     }
 
-    function emergencyBreak() public onlyOwner {}
+
 
     modifier presaleStarted() {
         require(privateSaleStarted == true, "sale is not started");
@@ -238,15 +261,15 @@ contract PrivateSale is ReentrancyGuard, Ownable {
 
     // Function to receive Ether. msg.data must be empty
     receive() external payable {
-        require(privateSaleStarted == true, "cannot receive at this time");
+        require(privateSaleStarted == true && emergencyBreakActivated != true, "cannot receive at this time");
     }
 
     // Fallback function is called when msg.data is not empty
     fallback() external payable {
-        require(privateSaleEnded == true, "cannot do that at this time");
+        require(privateSaleEnded == true && emergencyBreakActivated != true, "cannot do that at this time");
     }
 
-    function getBalance() public view returns (uint256) {
+    function getBalance() public view emergencyNotEnabled returns (uint256) {
         return address(this).balance;
     }
 }

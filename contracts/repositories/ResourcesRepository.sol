@@ -32,7 +32,8 @@ contract ResourcesRepository is Initializable, ReentrancyGuardUpgradeable, Resou
         string memory name,
         Resource.ResourceTypes rType,
         address resAddr,
-        address owner_
+        address owner_,
+        bytes calldata _data
     ) internal returns (bytes32) {
         bytes32 id = _calculateResourceID(name, rType);
         _rExists[name] = true;
@@ -46,7 +47,8 @@ contract ResourcesRepository is Initializable, ReentrancyGuardUpgradeable, Resou
             name: name,
             rType: rType,
             rAddress: resAddr,
-            owner: owner_
+            owner: owner_,
+            data: _data
         });
         _resourceRecords[id] = rr;
         return id;
@@ -66,10 +68,11 @@ contract ResourcesRepository is Initializable, ReentrancyGuardUpgradeable, Resou
         string memory name,
         Resource.ResourceTypes rType,
         address resAddr,
-        address owner_
+        address owner_,
+        bytes calldata _data
     ) public onlyOwner returns (bytes32) {
         require(_rExists[name] != true, "resource already exists");
-        return _addResource(name, rType, resAddr, owner_);
+        return _addResource(name, rType, resAddr, owner_, _data);
     }
 
     function removeResource(bytes32 id) public onlyOwner {
@@ -102,10 +105,11 @@ contract ResourcesRepository is Initializable, ReentrancyGuardUpgradeable, Resou
     function initResource(
         string memory name,
         string memory rType,
-        address _rAddress
-    ) public onlyOwner override returns(bytes32) {
-        
-        return addResource(name, strToType[rType], _rAddress, msg.sender);
+        address _rAddress,
+        bytes calldata _data
+    ) public onlyOwner  override returns(bytes32) {
+
+        return addResource(name, strToType[rType], _rAddress, msg.sender, _data);
     }
 
     function initResourceRecord(address owner, bytes memory merkleProof)
